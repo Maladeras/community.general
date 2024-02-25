@@ -90,6 +90,11 @@ options:
     type: str
     choices: ['nocloud', 'configdrive2']
     version_added: 1.3.0
+  ciupgrade:
+    description:
+      - 'cloud-init: do an automatic package upgrade after the first boot.'
+    type: bool
+    version_added: 1.3.0
   ciuser:
     description:
       - 'cloud-init: username of default user to create.'
@@ -1006,7 +1011,7 @@ class ProxmoxKvmAnsible(ProxmoxAnsible):
     def create_vm(self, vmid, newid, node, name, memory, cpu, cores, sockets, update, update_unsafe, **kwargs):
         # Available only in PVE 4
         only_v4 = ['force', 'protection', 'skiplock']
-        only_v6 = ['ciuser', 'cipassword', 'sshkeys', 'ipconfig', 'tags']
+        only_v6 = ['ciupgrade', 'ciuser', 'cipassword', 'sshkeys', 'ipconfig', 'tags']
 
         # valid clone parameters
         valid_clone_params = ['format', 'full', 'pool', 'snapname', 'storage', 'target']
@@ -1233,6 +1238,7 @@ def main():
         cicustom=dict(type='str'),
         cipassword=dict(type='str', no_log=True),
         citype=dict(type='str', choices=['nocloud', 'configdrive2']),
+        ciupgrade=dict(type='bool'),
         ciuser=dict(type='str'),
         clone=dict(type='str'),
         cores=dict(type='int'),
@@ -1466,6 +1472,7 @@ def main():
                               cicustom=module.params['cicustom'],
                               cipassword=module.params['cipassword'],
                               citype=module.params['citype'],
+                              ciupgrade=module.params['ciupgrade'],
                               ciuser=module.params['ciuser'],
                               cpulimit=module.params['cpulimit'],
                               cpuunits=module.params['cpuunits'],
